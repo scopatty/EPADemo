@@ -1,47 +1,15 @@
-provider "azurerm" {
-  features {}
-
-  tenant_id       = var.tenant_id
-  subscription_id = var.subscription_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
-}
-
-resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
-  location = var.location
-}
-
-resource "azurerm_app_service_plan" "asp" {
-  name                = "asp-free-tier"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  sku {
-    tier = "Free"
-    size = "F1"
-  }
-}
-
-resource "azurerm_app_service" "webapp" {
-  name                = "webapp-free-tier"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  app_service_plan_id = azurerm_app_service_plan.asp.id
-}
-
 resource "azurerm_public_ip" "appgw_ip" {
   name                = "appgw-public-ip"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
+  location            = var.connections_resource_group_name.rg.location
+  resource_group_name = var.connections_resource_group_name.rg.name
+  allocation_method   = "static"
   sku                 = "Standard"
 }
 
 resource "azurerm_application_gateway" "appgw" {
   name                = "appgw-webapp"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
+  location            = azurerm_public_ip.rg.location
+  resource_group_name = azurerm_public_ip.rg.name
   sku {
     name     = "WAF_v2"
     tier     = "WAF_v2"
@@ -79,18 +47,18 @@ resource "azurerm_application_gateway" "appgw" {
   }
 
   http_listener {
-    name                           = "httpListener"
+    name                         = "httpListener"
     frontend_ip_configuration_name = "appgw-frontend-ip"
-    frontend_port_name             = "frontendPort"
-    protocol                       = "Http"
+    frontend_port_name           = "frontendPort"
+    protocol                     = "Http"
   }
 
   request_routing_rule {
-    name                       = "rule1"
-    rule_type                  = "Basic"
-    http_listener_name         = "httpListener"
-    backend_address_pool_name  = "backendPool"
-    backend_http_settings_name = "backendHttpSettings"
+    name                         = "rule1"
+    rule_type                    = "Basic"
+    http_listener_name           = "httpListener"
+    backend_address_pool_name    = "backendPool"
+    backend_http_settings_name   = "backendHttpSettings"
   }
 }
 
