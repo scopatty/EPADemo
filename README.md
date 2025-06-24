@@ -1,38 +1,21 @@
 # Demo Application
 
-To implement the "Secure and Scalable E-commerce Website Deployment" project using Microsoft Azure, you'll follow a multi-layered, DevOps-focused cloud architecture approach. Here's a step-by-step guide covering:
-	• Infrastructure as Code (IaC)
-	• CI/CD
-	• Security
-	• Scalability
-	• High Availability
+Order of deployment:
 
- 1. Architecture Overview in Azure
+- vnetgway.ps1
+- webappsrgcreate.ps1
+- serviceprincple.ps1
+- vnetsubnet.tf
+- appservice-webapp.t
+- appgway.tf
 
-User -> Azure Front Door / Application Gateway
-      -> Azure App Service / AKS (Web Frontend)
-      -> Azure SQL / Cosmos DB / Blob Storage (Data Layer)
-      -> Azure Functions / Logic Apps (Backend Logic)
-      -> Azure Monitor / Application Insights (Monitoring)
+The first two scripts will create two seperate resource groups 'rg-uks-webapps' and 'rg-uks-connections'. The serviceprincple.ps1 will check the groups exist and then create a service principle and add itself a contributor to allow creation.
 
-2. Infrastructure as Code (IaC) with Terraform
+Within the 'rg-uks-connections' there will be a vnet with an attached subnet. Address space: 192.0.10.0/24 subnet: 192.0.10/26. A total of 256 addresses and which 64 address assigned for my application gateway.
 
-Stack: 
-	• Azure App Service Plan + Web App
-	• Azure SQL or Cosmos DB
-	• Azure Key Vault
-	• Azure Application Gateway / Azure Front Door
+Within the 'rg-uks-webapps' there is app service plan (free tier) along with a webapp for my application.
 
+Eventually I'll do the DNS configuration via Terraform for Cloudflare.
 
-3. CI/CD Pipeline
-Use Azure DevOps Pipelines or GitHub Actions.
-Steps:
-	1. Source Control: GitHub or Azure Repos
-	2. CI:
-		○ Build and test application (Node.js/Python/Java/.NET)
-		○ Dockerize (if using containers)
-	3. CD:
-		○ Deploy infrastructure (IaC)
-		○ Deploy app to Azure App Service or AKS
 
 
