@@ -22,7 +22,7 @@ Stack:
 	• Azure SQL or Cosmos DB
 	• Azure Key Vault
 	• Azure Application Gateway / Azure Front Door
-NSGs & firewalls![image](https://github.com/user-attachments/assets/21c93d62-f3c9-436a-9b26-25503020907e)
+
 
 3. CI/CD Pipeline
 Use Azure DevOps Pipelines or GitHub Actions.
@@ -34,5 +34,5 @@ Steps:
 	3. CD:
 		○ Deploy infrastructure (IaC)
 		○ Deploy app to Azure App Service or AKS
-Run post-deployment tests![image](https://github.com/user-attachments/assets/dd42d1eb-b7b2-4ecd-a2c4-56f8d0f81f4c)
+
 
