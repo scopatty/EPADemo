@@ -1,0 +1,38 @@
+name: Deploy Azure Resources with Terraform
+
+on:
+  workflow_dispatch: # Manual trigger for the workflow
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.x # Specify your desired Terraform version
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+
+    - name: Terraform Validate
+      id: validate
+      run: terraform validate
+
+    - name: Terraform Apply
+      id: apply
+      # The '--auto-approve' flag bypasses the interactive approval prompt.
+      # Use with caution, especially in production environments, or consider adding a manual approval step.
+      run: terraform apply -auto-approve
