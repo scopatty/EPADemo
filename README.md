@@ -16,6 +16,3 @@ Within the 'rg-uks-connections' there will be a vnet with an attached subnet. Ad
 Within the 'rg-uks-webapps' there is app service plan (free tier) along with a webapp for my application.
 
 Eventually I'll do the DNS configuration via Terraform for Cloudflare.
-
-
-
