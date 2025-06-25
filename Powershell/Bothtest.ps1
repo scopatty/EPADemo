@@ -3,7 +3,7 @@ $servicePrincipalName = "github-deployerv2"
 # Define your first resource group
 $resourceGroup1 = "rg-uks-webapps"
 # Define your second resource group - IMPORTANT: Replace with your actual second resource group name
-$resourceGroup2 = "rg-uks-data" 
+$resourceGroup2 = "rg-uks-connections" 
 
 # --- 1. Create the Service Principal ---
 $spOutput = az ad sp create-for-rbac `
@@ -31,3 +31,5 @@ az role assignment create `
     --assignee $appId `
     --role "Contributor" `
     --scope $resourceGroupId2
+
+Write-Host: "App ID: $appId, Secret: $password, Tenant ID: $tenantId"
