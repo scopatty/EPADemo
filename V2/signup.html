@@ -1,0 +1,172 @@
+<!-- templates/signup.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Council Tax Rebate Sign-up</title>
+    <!-- Tailwind CSS CDN for quick styling -->
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <style>
+        /* Custom styles if needed beyond Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light blue-gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 600px;
+            width: 95%;
+            background-color: #ffffff; /* White background for the form */
+            padding: 2.5rem; /* 40px */
+            border-radius: 1.5rem; /* 24px, rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Soft shadow */
+            border: 1px solid #e2e8f0; /* Light border */
+        }
+        .form-group label {
+            font-weight: 600; /* Semi-bold labels */
+            color: #2d3748; /* Dark gray text */
+            margin-bottom: 0.5rem; /* 8px */
+            display: block;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem; /* 12px */
+            border: 1px solid #cbd5e0; /* Light border */
+            border-radius: 0.75rem; /* 12px, rounded corners */
+            font-size: 1rem;
+            color: #4a5568; /* Medium gray text */
+            box-sizing: border-box; /* Include padding in width */
+        }
+        .form-group input:focus {
+            border-color: #4299e1; /* Blue on focus */
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Soft blue shadow on focus */
+        }
+        .btn-primary {
+            background-color: #4299e1; /* Blue button */
+            color: #ffffff;
+            padding: 0.85rem 1.5rem; /* 14px 24px */
+            border-radius: 0.75rem; /* 12px */
+            font-weight: 700; /* Bold text */
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(66, 153, 225, 0.3); /* Button shadow */
+        }
+        .btn-primary:hover {
+            background-color: #3182ce; /* Darker blue on hover */
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1.25rem; /* 20px */
+            border-radius: 0.75rem; /* 12px */
+            font-weight: 600;
+        }
+        .flash-success {
+            background-color: #d1fae5; /* Light green */
+            color: #065f46; /* Dark green */
+            border: 1px solid #34d399;
+        }
+        .flash-error {
+            background-color: #fee2e2; /* Light red */
+            color: #991b1b; /* Dark red */
+            border: 1px solid #ef4444;
+        }
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.5rem; /* Adjust padding for smaller screens */
+                border-radius: 1rem; /* Slightly less rounded */
+            }
+            .form-group {
+                margin-bottom: 1rem; /* Reduce spacing slightly */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="container bg-white p-10 rounded-2xl shadow-xl border border-gray-200">
+        <h1 class="text-3xl font-extrabold text-center text-gray-900 mb-8">Council Tax Rebate Sign-up</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="mb-6">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('submit_rebate_signup') }}" method="POST" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="council_tax_account_number">Council Tax Account Number:</label>
+                    <input type="text" id="council_tax_account_number" name="council_tax_account_number"
+                           value="{{ form_data.council_tax_account_number if form_data else '' }}" required
+                           class="mt-1 block w-full">
+                </div>
+                <div class="form-group">
+                    <label for="postcode">Postcode:</label>
+                    <input type="text" id="postcode" name="postcode"
+                           value="{{ form_data.postcode if form_data else '' }}" required
+                           class="mt-1 block w-full">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name"
+                           value="{{ form_data.first_name if form_data else '' }}" required
+                           class="mt-1 block w-full">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" id="last_name" name="last_name"
+                           value="{{ form_data.last_name if form_data else '' }}" required
+                           class="mt-1 block w-full">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email"
+                       value="{{ form_data.email if form_data else '' }}" required
+                       class="mt-1 block w-full">
+            </div>
+
+            <div class="form-group">
+                <label for="phone_number">Phone Number (Optional):</label>
+                <input type="tel" id="phone_number" name="phone_number"
+                       value="{{ form_data.phone_number if form_data else '' }}"
+                       class="mt-1 block w-full">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="form-group">
+                    <label for="bank_account_number">Bank Account Number:</label>
+                    <input type="text" id="bank_account_number" name="bank_account_number"
+                           value="{{ form_data.bank_account_number if form_data else '' }}" required
+                           class="mt-1 block w-full">
+                </div>
+                <div class="form-group">
+                    <label for="sort_code">Sort Code:</label>
+                    <input type="text" id="sort_code" name="sort_code"
+                           value="{{ form_data.sort_code if form_data else '' }}" required
+                           class="mt-1 block w-full">
+                </div>
+            </div>
+
+            <button type="submit"
+                    class="btn-primary w-full text-center py-3 rounded-xl font-bold text-lg cursor-pointer">
+                Sign Up for Rebate
+            </button>
+        </form>
+    </div>
+</body>
+</html>
