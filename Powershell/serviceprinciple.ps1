@@ -23,14 +23,14 @@ az role assignment create `
     --assignee $appId `
     --role "Contributor" `
     --resource-group $resourceGroup1
-
+    --scope $id
 
 # --- 3. Assign Contributor Role to Resource Group 2 ---
 az role assignment create `
     --assignee $appId `
     --role "Contributor" `
     --resource-group $resourceGroup2
-
+    --scope $id
 
 # Important: Store the appId, tenantId, and password (client secret) securely.
 # You will need these credentials for applications or services to authenticate using this Service Principal.
