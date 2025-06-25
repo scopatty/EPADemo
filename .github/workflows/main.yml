@@ -8,7 +8,7 @@ on:
       terraform_directory:
         description: 'Terraform directory (e.g., ./terraform)'
         required: false
-        default: '.' # Default to root of the repo if not specified
+        default: 'EPADemo/Terraform' # Default to root of the repo if not specified
       tf_action:
         description: 'Terraform Action (plan or apply)'
         required: true
