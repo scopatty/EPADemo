@@ -1,4 +1,4 @@
-$servicePrincipalName = "github-deployerv2"
+$servicePrincipalName = "github-deployer"
 
 # Define your first resource group
 $resourceGroup1 = "rg-uks-webapps"
@@ -32,4 +32,4 @@ az role assignment create `
     --role "Contributor" `
     --scope $resourceGroupId2
 
-Write-Host: "App ID: $appId, Secret: $password, Tenant ID: $tenantId"
+Write-Host "App ID: $appId, Secret: $password, Tenant ID: $tenantId"
