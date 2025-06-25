@@ -15,10 +15,13 @@ $password = $spOutput.password
 $tenantId = $spOutput.tenant
 
 # --- 2. Assign Contributor Role to Resource Group ---
+# Get the full resource group ID to use as the scope
+$resourceGroupId = (az group show --name $resourceGroup --query id -o tsv)
+
 az role assignment create `
     --assignee $appId `
     --role "Contributor" `
-    --resource-group $resourceGroup
+    --scope $resourceGroupId
 
 Write-Host "AppID: $appId, Secret: $password, Tenant ID: $tenantId"
 # Important: Store the appId, tenantId, and password (client secret) securely.
