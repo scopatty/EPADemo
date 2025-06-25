@@ -8,7 +8,7 @@ on:
       terraform_directory:
         description: 'Terraform directory (e.g., ./terraform)'
         required: false
-        default: 'EPADemo/Terraform' # Default to root of the repo if not specified
+        default: '.' # Default to root of the repo if not specified
       tf_action:
         description: 'Terraform Action (plan or apply)'
         required: true
@@ -17,6 +17,10 @@ on:
         options:
           - plan
           - apply
+
+env:
+  TF_VAR_resource_group_name: "rg-uks-webapps, rg-uks-connections" # Example: if you have a variable named resource_group_name
+  TF_VAR_location: "uksouth" # Example: if you have a variable named location
 
 jobs:
   terraform:
