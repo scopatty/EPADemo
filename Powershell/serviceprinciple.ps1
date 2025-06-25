@@ -23,7 +23,6 @@ az role assignment create `
     --assignee $appId `
     --role "Contributor" `
     --resource-group $resourceGroup1
-    --scopes $servicePrincipalName
 
 
 # --- 3. Assign Contributor Role to Resource Group 2 ---
@@ -31,7 +30,6 @@ az role assignment create `
     --assignee $appId `
     --role "Contributor" `
     --resource-group $resourceGroup2
-    --scopes $servicePrincipalName
 
 
 # Important: Store the appId, tenantId, and password (client secret) securely.
