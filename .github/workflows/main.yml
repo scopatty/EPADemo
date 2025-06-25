@@ -1,38 +1,66 @@
-name: Deploy Azure Resources with Terraform
+# .github/workflows/terraform-azure-deploy.yml
+
+name: Terraform Azure Deployment
 
 on:
-  workflow_dispatch: # Manual trigger for the workflow
+  workflow_dispatch: # This makes the workflow manually triggerable from the GitHub Actions UI
+    inputs:
+      terraform_directory:
+        description: 'Terraform directory (e.g., ./terraform)'
+        required: false
+        default: 'EPADemo/Terraform' # Default to root of the repo if not specified
+      tf_action:
+        description: 'Terraform Action (plan or apply)'
+        required: true
+        default: 'plan'
+        type: choice
+        options:
+          - plan
+          - apply
 
 jobs:
-  deploy:
+  terraform:
+    name: 'Terraform ${{ github.event.inputs.tf_action }}'
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        client-id: ${{ secrets.AZURE_CLIENT_ID }}
-        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          # creds: ${{ secrets.AZURE_CREDENTIALS }} # Recommended: Use a single JSON secret with clientID, clientSecret, tenantID, subscriptionID
+          # Using individual secrets as per your preference:
+          client-id: ${{ secrets.APPID_GITHUBDEPLOYER }}
+          tenant-id: ${{ secrets.TENANTID_GITHUBDEPLOYER }} # Updated secret name
+          subscription-id: ${{ secrets.SUBID }}
+          client-secret: ${{ secrets.SECRET_GITHUBDEPLOYER }}
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
-      with:
-        terraform_version: 1.x # Specify your desired Terraform version
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.0 # Specify your desired Terraform version
 
-    - name: Terraform Init
-      id: init
-      run: terraform init
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: ${{ github.event.inputs.terraform_directory }}
 
-    - name: Terraform Validate
-      id: validate
-      run: terraform validate
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate
+        working-directory: ${{ github.event.inputs.terraform_directory }}
 
-    - name: Terraform Apply
-      id: apply
-      # The '--auto-approve' flag bypasses the interactive approval prompt.
-      # Use with caution, especially in production environments, or consider adding a manual approval step.
-      run: terraform apply -auto-approve
+      - name: Terraform Plan
+        id: plan
+        if: github.event.inputs.tf_action == 'plan' || github.event.inputs.tf_action == 'apply' # Run plan for both options
+        run: terraform plan -no-color
+        working-directory: ${{ github.event.inputs.terraform_directory }}
+        continue-on-error: true
+
+      - name: Terraform Apply
+        id: apply
+        if: github.event.inputs.tf_action == 'apply' # Only apply if 'apply' is selected
+        run: terraform apply -auto-approve
+        working-directory: ${{ github.event.inputs.terraform_directory }}
