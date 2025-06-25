@@ -1,4 +1,4 @@
-$servicePrincipalName = "github-deployer"
+$servicePrincipalName = "github-deployerv2"
 
 # Define your first resource group
 $resourceGroup1 = "rg-uks-webapps"
