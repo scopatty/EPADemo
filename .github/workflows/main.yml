@@ -40,6 +40,7 @@ jobs:
           tenant-id: ${{ secrets.TENANTID_GITHUBDEPLOYER }} # Updated secret name
           subscription-id: ${{ secrets.SUBID }}
           client-secret: ${{ secrets.SECRET_GITHUBDEPLOYER }}
+          auth-type: service-principle
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
