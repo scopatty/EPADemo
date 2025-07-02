@@ -1,20 +1,18 @@
 name: Terraform Azure Deployment
 
 on:
-  push:
-    branches:
-      - main # Trigger this workflow on pushes to the 'main' branch
   workflow_dispatch: # Allows manual triggering of the workflow from the GitHub UI
 
 env:
-  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-  ARM_SUBSCRIPTION_ID: 9bc0a274-11f2-44a8-b46b-319480e1d929 # Replace with your actual subscription ID or make it a secret/variable
+  ARM_CLIENT_ID: ${{ secrets.APPID_GITHUBDEPLOYER }}
+  ARM_TENANT_ID: ${{ secrets.TENANTID_GITHUBDEPLOYER }}
+  ARM_CLIENT_SECRET: ${{ secrets.SECRET_GITHUBDEPLOYER }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.SUBID }}
+  auth-type: service-principle
 
 jobs:
   terraform_deploy:
-    runs-on: ubuntu-latest # Use a Linux runner
+    runs-on: windows-latest # Use a Linux runner
 
     steps:
     - name: Checkout code
