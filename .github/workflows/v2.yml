@@ -1,0 +1,63 @@
+name: Terraform Azure Deployment
+
+on:
+  push:
+    branches:
+      - main # Trigger this workflow on pushes to the 'main' branch
+  workflow_dispatch: # Allows manual triggering of the workflow from the GitHub UI
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+  ARM_SUBSCRIPTION_ID: 9bc0a274-11f2-44a8-b46b-319480e1d929 # Replace with your actual subscription ID or make it a secret/variable
+
+jobs:
+  terraform_deploy:
+    runs-on: ubuntu-latest # Use a Linux runner
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4 # Action to check out your repository code
+
+    - name: Azure Login
+      uses: azure/login@v2 # Action to log in to Azure using the Service Principal
+      with:
+        client-id: ${{ env.ARM_CLIENT_ID }}
+        tenant-id: ${{ env.ARM_TENANT_ID }}
+        subscription-id: ${{ env.ARM_SUBSCRIPTION_ID }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3 # Action to set up Terraform CLI
+      with:
+        terraform_version: 1.8.0 # Specify a compatible Terraform version
+
+    - name: Terraform Init
+      id: init
+      run: terraform init
+      env:
+        # Pass the sensitive password as an environment variable for Terraform
+        # This is picked up by Terraform as TF_VAR_<variable_name>
+        TF_VAR_postgresql_admin_password: ${{ secrets.TF_VAR_postgresql_admin_password }}
+
+    - name: Terraform Plan
+      id: plan
+      run: terraform plan -no-color
+      env:
+        TF_VAR_postgresql_admin_password: ${{ secrets.TF_VAR_postgresql_admin_password }}
+      # Save the plan output to an artifact for review (optional but good practice)
+      # You might want to remove this for production if you use a separate approval step
+      # or if the plan output contains sensitive information.
+    - name: Upload Terraform Plan Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: terraform-plan
+        path: terraform.tfplan # Or the path to your plan file if you save it
+
+    - name: Terraform Apply
+      id: apply
+      # Only run apply if the plan step was successful
+      # For production, you might want a manual approval step here.
+      run: terraform apply -auto-approve
+      env:
+        TF_VAR_postgresql_admin_password: ${{ secrets.TF_VAR_postgresql_admin_password }}
